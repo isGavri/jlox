@@ -1,6 +1,6 @@
 # Jlox
 
-## Crafting comilers java interpreter by Robert Nymstrong
+## Crafting compilers java interpreter by Robert Nymstrong
 
 Run by typing
 
@@ -9,4 +9,4 @@ Run by typing
 
 Run your own file by typing
 
-`mvn -q exec:java -Dexec.args="filename`
+`mvn -q exec:java -Dexec.args="filename"`
