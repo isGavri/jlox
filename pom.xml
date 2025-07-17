@@ -36,8 +36,7 @@
         <configuration>
           <mainClass>com.craftinginterpreters.lox.Lox</mainClass>
           <arguments>
-            <argument>arg1</argument>
-            <argument>arg2</argument>
+            <argument>code.jlox</argument>
           </arguments>
         </configuration>
       </plugin>

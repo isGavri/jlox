@@ -1,0 +1,25 @@
+// Single-line comment
+
+var x = 42;
+var y = x + 3.14 * (5 - 2) >= 10;
+
+// Multiline comment with nesting
+/* This is a comment
+   /* Nested block */
+   Ends here */
+print "Hello, world!"; // String literal
+
+var weird = !true == false; // Logical operators
+
+// Unclosed string
+var error = "This string never ends...
+
+// Unexpected characters
+var symbols = @#$%
+
+// Newline handling
+if (x < 10)
+{
+  print "Indented block";
+}
+
