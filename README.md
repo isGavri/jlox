@@ -62,3 +62,27 @@ L → a | b | ... | z | A | B | ... | Z | _
 D → 0 | 1 | ... | 9
 ```
 
+### Parser/Syntactic analysis
+
+Second phase of the interpreter.
+
+Now this generally represents a context-free grammar (type 2) and/or a push-down automata. This produces valid sequences of tokens given a set of rules. This sequence is an expression of our language.
+
+*Rules are expressed in a kind of BNF syntax*
+
+Right now this rules only account for literal, unary, binary and grouping expressions. And right now is ambiguous/not deterministic.
+
+```
+expression     → literal
+                 | unary
+                 | binary
+                 | grouping ;
+
+literal        → NUMBER | STRING | "true" | "false" | "nil" ;
+grouping       → "(" expression ")" ;
+unary          → ( "-" | "!" ) expression ;
+binary         → expression operator expression ;
+operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
+               | "+"  | "-"  | "*" | "/" ;
+```
+For this part we have the class AstPrinter that prints the way our syntax is being validated. You can change the main class on the pom.xml so it runs it once you pass it some code

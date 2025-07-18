@@ -34,9 +34,9 @@
         <artifactId>exec-maven-plugin</artifactId>
         <version>3.1.0</version>
         <configuration>
-          <mainClass>com.craftinginterpreters.lox.Lox</mainClass>
+          <mainClass>com.craftinginterpreters.lox.AstPrinter</mainClass>
           <arguments>
-            <argument>code.jlox</argument>
+            <!-- <argument>code.jlox</argument> -->
           </arguments>
         </configuration>
       </plugin>
