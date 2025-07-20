@@ -7,6 +7,10 @@ import java.util.Map;
 
 /**
  * Scanner
+ * Manages the lexical analysis
+ * TODO: add support for comma separated expressions, (aside function argument list)
+ * TODO: add support for ternary operator
+ *
  */
 import static com.craftinginterpreters.lox.TokenType.*;
 
@@ -21,6 +25,9 @@ public class Scanner {
 
   private static final Map<String, TokenType> keywords;
 
+  /**
+   * Hashmap for the reserved words
+   */
   static {
     keywords = new HashMap<>();
     keywords.put("and", AND);
