@@ -86,3 +86,21 @@ operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
                | "+"  | "-"  | "*" | "/" ;
 ```
 For this part we have the class AstPrinter that prints the way our syntax is being validated. You can change the main class on the pom.xml so it runs it once you pass it some code
+
+Finally our grammar ends up like this. All of the binary expression share the same structure.
+
+```
+
+expression     → equality ;
+equality       → comparison ( ( "!=" | "==" ) comparison )* ;
+comparison     → term ( ( ">" | ">=" | "<" | "<=" ) term )* ;
+term           → factor ( ( "-" | "+" ) factor )* ;
+factor         → unary ( ( "/" | "*" ) unary )* ;
+unary          → ( "!" | "-" ) unary
+               | primary ;
+primary        → NUMBER | STRING | "true" | "false" | "nil"
+               | "(" expression ")" ;
+```
+For our parser we wil use the recursive descent technique. What this means is that we will start parsing from the highest-level rule (in this case expression) and works downwards, when we match a non-terminal we call the function associated with that rule recursively and when we encounter a terminal it checks if the TokenType matches the expected terminal.
+
+Now we can parse a single expression
