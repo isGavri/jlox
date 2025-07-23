@@ -10,12 +10,6 @@ import com.craftinginterpreters.lox.Expr.Unary;
 
 /**
  * Interpreter
- * TODO: Challenges
- * - Investigate about comparison with types other than numbers and deciding if
- * I will implement them
- * - If either operand of a '+' operator is a string, concatenate them both into
- * a string
- * - Hanlde division by zero. Detect and report runtimeError
  */
 public class Interpreter implements Expr.Visitor<Object> {
 
@@ -49,12 +43,15 @@ public class Interpreter implements Expr.Visitor<Object> {
     Object right = evaluate(expr.right);
 
     switch (expr.operator.type) {
+      // Arithmetic
       case MINUS:
         checkNumberOperands(expr.operator, left, right);
         return (double) left - (double) right;
       case SLASH:
-        // Handle the dividing by 0
         checkNumberOperands(expr.operator, left, right);
+        if ((Double) right == 0) {
+          throw new RuntimeError(expr.operator, "You are trying to divide by zero.");
+        }
         return (double) left / (double) right;
       case STAR:
         checkNumberOperands(expr.operator, left, right);
@@ -67,19 +64,72 @@ public class Interpreter implements Expr.Visitor<Object> {
         if (left instanceof String && right instanceof String) {
           return (String) left + (String) right;
         }
-        throw new RuntimeError(expr.operator, "The operands must be two numbers or two strings");
+
+        if ((left instanceof String && right instanceof Double)
+            || (left instanceof Double && right instanceof String)) {
+          return stringify(left) + stringify(right);
+        }
+        throw new RuntimeError(expr.operator, "The operands must be numbers or strings");
+      // ) Comparison
       case GREATER:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left > (double) right;
+        if (left instanceof String && right instanceof Double) {
+          return left.toString().length() > (Double) right;
+        }
+        if (left instanceof Double && right instanceof String) {
+          return (Double) left > right.toString().length();
+        }
+        if (left instanceof Double && right instanceof Double) {
+          return (Double) left > (Double) right;
+        }
+        if (left instanceof String && right instanceof String) {
+          return left.toString().length() > right.toString().length();
+        }
+        throw new RuntimeError(expr.operator, "Unsuported comparison.");
       case GREATER_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left >= (double) right;
+
+        if (left instanceof String && right instanceof Double) {
+          return left.toString().length() >= (Double) right;
+        }
+        if (left instanceof Double && right instanceof String) {
+          return (Double) left >= right.toString().length();
+        }
+        if (left instanceof Double && right instanceof Double) {
+          return (Double) left >= (Double) right;
+        }
+        if (left instanceof String && right instanceof String) {
+          return left.toString().length() >= right.toString().length();
+        }
+        throw new RuntimeError(expr.operator, "Unsuported comparison.");
       case LESS:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left < (double) right;
+
+        if (left instanceof String && right instanceof Double) {
+          return left.toString().length() < (Double) right;
+        }
+        if (left instanceof Double && right instanceof String) {
+          return (Double) left < right.toString().length();
+        }
+        if (left instanceof Double && right instanceof Double) {
+          return (Double) left < (Double) right;
+        }
+        if (left instanceof String && right instanceof String) {
+          return left.toString().length() < right.toString().length();
+        }
+        throw new RuntimeError(expr.operator, "Unsuported comparison.");
       case LESS_EQUAL:
-        checkNumberOperands(expr.operator, left, right);
-        return (double) left <= (double) right;
+        if (left instanceof String && right instanceof Double) {
+          return left.toString().length() <= (Double) right;
+        }
+        if (left instanceof Double && right instanceof String) {
+          return (Double) left <= right.toString().length();
+        }
+        if (left instanceof Double && right instanceof Double) {
+          return (Double) left <= (Double) right;
+        }
+        if (left instanceof String && right instanceof String) {
+          return left.toString().length() <= right.toString().length();
+        }
+        throw new RuntimeError(expr.operator, "Unsuported comparison.");
+      // Equality
       case EQUAL:
         return isEqual(left, right);
       case BANG_EQUAL:
