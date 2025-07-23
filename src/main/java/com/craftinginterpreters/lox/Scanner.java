@@ -8,8 +8,6 @@ import java.util.Map;
 /**
  * Scanner
  * Manages the lexical analysis
- * TODO: add support for comma separated expressions, (aside function argument list)
- * TODO: add support for ternary operator
  *
  */
 import static com.craftinginterpreters.lox.TokenType.*;
@@ -114,6 +112,12 @@ public class Scanner {
         break;
       case '>':
         addToken(match('=') ? GREATER_EQUAL : GREATER);
+        break;
+      case '?':
+        addToken(Q_MARK);
+        break;
+      case ':':
+        addToken(COLON);
         break;
       case '/':
         if (match('/')) {

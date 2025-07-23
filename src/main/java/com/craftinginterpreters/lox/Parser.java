@@ -1,11 +1,13 @@
 package com.craftinginterpreters.lox;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.craftinginterpreters.lox.TokenType.*;
 
 /**
  * Parser
+ * TODO: add support for ternary operator
  */
 public class Parser {
 
@@ -31,7 +33,39 @@ public class Parser {
   // This functions represents this rule:
   // expression → equality
   private Expr expression() {
-    return equality();
+    return comma();
+  }
+
+  // comma → conditional ( "," conditional )* ;
+  private Expr comma() {
+
+    Expr expr = ternary();
+    if (!check(COMMA)) {
+      return expr;
+    }
+    List<Expr> exprs = new ArrayList<>();
+    exprs.add(expr);
+    while (match(COMMA)) {
+      exprs.add(ternary());
+    }
+
+    return new Expr.Comma(exprs);
+  }
+
+  // ternary → equality ( "?" expression ":" ternary )? ;
+  private Expr ternary() {
+    Expr condition = equality();
+    if (match(Q_MARK)) {
+      Token operator = previous();
+      Expr then = expression();
+      if (!match(COLON)) {
+        throw error(peek(), "Missing ':' for ternary operation");
+      }
+      Expr elseThen = expression();
+      return new Expr.Ternary(condition, then, elseThen, operator);
+
+    }
+    return condition;
   }
 
   // This function represents this rule:
@@ -124,6 +158,29 @@ public class Parser {
       Expr expr = expression();
       consume(RIGHT_PAREN, "Expect ')' after expression.");
       return new Expr.Grouping(expr);
+    }
+
+    // Binary operator appearing at the start of a expression
+
+    // Equality
+    if (match(BANG_EQUAL, EQUAL_EQUAL)) {
+      Expr discarded = comparison();
+      throw error(isAtEnd() ? previous() : advance(), "Missing operand for equality '!='/'==' expression");
+    }
+    // Comparison
+    if (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+      Expr discarded = term();
+      throw error(isAtEnd() ? previous() : advance(), "Missing operand for comparison '>'/'>='/'<'/'<=' expression");
+    }
+    // Term
+    if (match(PLUS, MINUS)) {
+      Expr discarded = factor();
+      throw error(isAtEnd() ? previous() : advance(), "Missing operand for term '+'/'-' expression");
+    }
+    // Factor
+    if (match(STAR, SLASH)) {
+      Expr discarded = unary();
+      throw error(isAtEnd() ? previous() : advance(), "Missing operand for factor '*'/'/' expression");
     }
 
     throw error(peek(), "Expected expression");

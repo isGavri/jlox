@@ -1,5 +1,9 @@
 package com.craftinginterpreters.lox;
 
+import static com.craftinginterpreters.lox.TokenType.COMMA;
+
+import java.util.List;
+
 abstract class Expr {
   /**
    * Visitor
@@ -13,6 +17,10 @@ abstract class Expr {
     R visitLiteralExpr(Literal expr);
 
     R visitUnaryExpr(Unary expr);
+
+    R visitCommaExpr(Comma expr);
+
+    R visitTernaryExpr(Ternary expr);
   }
 
   static class Binary extends Expr {
@@ -71,6 +79,42 @@ abstract class Expr {
 
     final Token operator;
     final Expr right;
+  }
+
+  static class Comma extends Expr {
+    Comma(List<Expr> exprs) {
+      this.exprs = exprs;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitCommaExpr(this);
+    }
+
+    final List<Expr> exprs;
+
+  }
+
+  // TODO: impove implementation
+  static class Ternary extends Expr {
+
+    Ternary(Expr condition, Expr then, Expr elseThen, Token operator) {
+      this.condition = condition;
+      this.then = then;
+      this.elseThen = elseThen;
+      this.operator = operator;
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitTernaryExpr(this);
+    }
+
+    final Expr condition;
+    final Expr then;
+    final Expr elseThen;
+    final Token operator;
+
   }
 
   abstract <R> R accept(Visitor<R> visitor);

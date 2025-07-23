@@ -104,3 +104,12 @@ primary        → NUMBER | STRING | "true" | "false" | "nil"
 For our parser we wil use the recursive descent technique. What this means is that we will start parsing from the highest-level rule (in this case expression) and works downwards, when we match a non-terminal we call the function associated with that rule recursively and when we encounter a terminal it checks if the TokenType matches the expected terminal.
 
 Now we can parse a single expression
+
+Added support to comma and ternary operators. We added two new non-terminals, comma and ternary
+```
+comma          → conditional ( "," conditional )* ;
+conditional    → equality ( "?" expression ":" conditional )? ;
+```
+This come right after the expression call as they have the lowest precedence when evaluation, so the highest when parsed
+
+And we also need to add new expressions to handle this operators

@@ -1,8 +1,10 @@
 package com.craftinginterpreters.lox;
 
 import com.craftinginterpreters.lox.Expr.Binary;
+import com.craftinginterpreters.lox.Expr.Comma;
 import com.craftinginterpreters.lox.Expr.Grouping;
 import com.craftinginterpreters.lox.Expr.Literal;
+import com.craftinginterpreters.lox.Expr.Ternary;
 import com.craftinginterpreters.lox.Expr.Unary;
 
 /**
@@ -34,6 +36,26 @@ public class AstPrinter implements Expr.Visitor<String> {
   @Override
   public String visitUnaryExpr(Unary expr) {
     return parenthesize(expr.operator.lexeme, expr.right);
+  }
+
+  @Override
+  public String visitCommaExpr(Comma expr) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("(comma");
+    for (Expr e : expr.exprs) {
+      builder.append(" ");
+      builder.append(e.accept(this));
+    }
+    builder.append(")");
+    return builder.toString();
+  }
+
+  @Override
+  public String visitTernaryExpr(Ternary expr) {
+    StringBuilder builder = new StringBuilder();
+    builder.append("(? ").append(expr.condition.accept(this)).append(" ").append(expr.then.accept(this)).append(" : ")
+        .append(expr.elseThen.accept(this)).append(")");
+    return builder.toString();
   }
 
   private String parenthesize(String name, Expr... exprs) {
