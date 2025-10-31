@@ -1,6 +1,8 @@
 
 package com.craftinginterpreters.lox;
 
+import java.util.List;
+
 import com.craftinginterpreters.lox.Expr.Binary;
 import com.craftinginterpreters.lox.Expr.Comma;
 import com.craftinginterpreters.lox.Expr.Grouping;
@@ -11,12 +13,13 @@ import com.craftinginterpreters.lox.Expr.Unary;
 /**
  * Interpreter
  */
-public class Interpreter implements Expr.Visitor<Object> {
+public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
 
-  void interpret(Expr expr) {
+  void interpret(List<Stmt> statements) {
     try {
-      Object value = evaluate(expr);
-      System.out.println(stringify(value));
+      for (Stmt statement : statements) {
+        execute(statement);
+      }
     } catch (RuntimeError e) {
       Lox.runtimeError(e);
     }
@@ -178,6 +181,23 @@ public class Interpreter implements Expr.Visitor<Object> {
 
   private Object evaluate(Expr expr) {
     return expr.accept(this);
+  }
+
+  private void execute(Stmt stmt) {
+    stmt.accept(this);
+  }
+
+  @Override
+  public Void visitExpressionStmt(Stmt.Expression stmt) {
+    evaluate(stmt.expr);
+    return null;
+  }
+
+  @Override
+  public Void visitPrintStmt(Stmt.Print stmt) {
+    Object value = evaluate(stmt.expr);
+    System.out.println(stringify(value));
+    return null;
   }
 
   private boolean isTruthy(Object object) {

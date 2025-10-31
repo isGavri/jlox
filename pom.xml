@@ -36,6 +36,7 @@
         <configuration>
           <mainClass>com.craftinginterpreters.lox.Lox</mainClass>
           <arguments>
+            <!-- Uncomment to run file, comment to run REPL -->
             <!-- <argument>code.jlox</argument> -->
           </arguments>
         </configuration>

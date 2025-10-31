@@ -1,3 +1,4 @@
+/*
 // Single-line comment
 
 var x = 42;
@@ -16,3 +17,8 @@ if (x < 10)
 {
   print "Indented block";
 }
+*/
+
+print "one";
+print true;
+print 2 + 1;

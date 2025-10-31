@@ -1,7 +1,5 @@
 package com.craftinginterpreters.lox;
 
-import static com.craftinginterpreters.lox.TokenType.COMMA;
-
 import java.util.List;
 
 abstract class Expr {

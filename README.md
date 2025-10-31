@@ -19,7 +19,7 @@ Run your own file by typing
 
 #### pom.xml
 
-```
+```xml
     <arguments>
         <argument>code.jlox</argument>
     </arguments>
@@ -32,6 +32,8 @@ This is the first phase of our interpreter
 We start the interpreter by scanning the source (file or REPL) we implement a regular gramma (type 3) or finite automata to validate the input of the language, this only on a lexical level, this means only validates lexemes ("words"). We also assing the lexemes to tokens (so it has a higher abstraction) and handle errors that could occur on this phase (unterminated strings, unexpected characters), basically when the grammar fails.
 
 Basically the definition of our regular grammar (and thus of our language) turns out like so
+
+*Needs fix to include new tokens added in the challenges and own features ternary operator and i dont remeber what else*
 
 
 ```
@@ -70,24 +72,6 @@ Now this generally represents a context-free grammar (type 2) and/or a push-down
 
 *Rules are expressed in a kind of BNF syntax*
 
-Right now this rules only account for literal, unary, binary and grouping expressions. And right now is ambiguous/not deterministic.
-
-```
-expression     → literal
-                 | unary
-                 | binary
-                 | grouping ;
-
-literal        → NUMBER | STRING | "true" | "false" | "nil" ;
-grouping       → "(" expression ")" ;
-unary          → ( "-" | "!" ) expression ;
-binary         → expression operator expression ;
-operator       → "==" | "!=" | "<" | "<=" | ">" | ">="
-               | "+"  | "-"  | "*" | "/" ;
-```
-For this part we have the class AstPrinter that prints the way our syntax is being validated. You can change the main class on the pom.xml so it runs it once you pass it some code
-
-Finally our grammar ends up like this. All of the binary expression share the same structure.
 
 ```
 
@@ -101,9 +85,8 @@ unary          → ( "!" | "-" ) unary
 primary        → NUMBER | STRING | "true" | "false" | "nil"
                | "(" expression ")" ;
 ```
-For our parser we wil use the recursive descent technique. What this means is that we will start parsing from the highest-level rule (in this case expression) and works downwards, when we match a non-terminal we call the function associated with that rule recursively and when we encounter a terminal it checks if the TokenType matches the expected terminal.
 
-Now we can parse a single expression
+For our parser we will use the recursive descent technique. What this means is that we will start parsing from the highest-level rule (in this case expression) and works downwards, when we match a non-terminal we call the function associated with that rule recursively and when we encounter a terminal it checks if the TokenType matches the expected terminal.
 
 Added support to comma and ternary operators. We added two new non-terminals, comma and ternary
 ```
@@ -112,4 +95,41 @@ conditional    → equality ( "?" expression ":" conditional )? ;
 ```
 This come right after the expression call as they have the lowest precedence when evaluation, so the highest when parsed
 
-And we also need to add new expressions to handle this operators
+*TODO: needs to be included in the full grammar definition*
+Added grammar for statements
+```
+program        → statement* EOF ;
+
+statement      → exprStmt
+               | printStmt ;
+
+exprStmt       → expression ";" ;
+printStmt      → "print" expression ";" ;
+```
+
+Then we added this for variable declarations (and also for functions later on i believe)
+
+```bnf
+program        → declaration* EOF ;
+
+declaration    → varDecl
+               | statement ;
+
+statement      → exprStmt
+               | printStmt ;
+```
+
+New rule for declaring a variable
+```bnf
+varDecl         → "var" IDENTIFIER ( "=" expression )? ";";
+```
+And we also define a new primary expression which just generates an identifier
+```
+primary         → "true" | "false" | "nil"
+                | NUMBER | STRING
+                | "(" expression ")"
+                | IDENTIFIER ;
+```
+### Interpreter
+
+We just return the value of our leaf nodes that are literals, and run each type of expression
