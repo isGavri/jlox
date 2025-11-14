@@ -16,11 +16,15 @@ public class GenerateAst {
       System.exit(64);
     }
     String outputdir = args[0];
-    defineAst(outputdir, "Expr", Arrays.asList(
-        "Binary : Expr left, Token operator, Expr right",
-        "Grouping : Expr expression",
-        "Literal  : Object value",
-        "Unary    : Token operator, Expr right"));
+    // defineAst(outputdir, "Expr", Arrays.asList(
+    // "Binary : Expr left, Token operator, Expr right",
+    // "Grouping : Expr expression",
+    // "Literal : Object value",
+    // "Unary : Token operator, Expr right"));
+
+    defineAst(outputdir, "Stmt", Arrays.asList(
+        "Expression : Expr expression",
+        "Print      : Expr expresssion"));
   }
 
   private static void defineAst(String outputdir, String baseName, List<String> types)

@@ -1,4 +1,4 @@
-package com.craftinginterpreters.lox;
+ptoolackage com.craftinginterpreters.lox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,17 +37,17 @@ public class Parser {
     return statements;
   }
 
+  // This functions represents this rule:
+  // expression → equality
+  private Expr expression() {
+    return comma();
+  }
+
   private Stmt statement() {
     if (match(PRINT))
       return printStatement();
 
     return expressionStatement();
-  }
-
-  private Stmt printStatement() {
-    Expr value = expression();
-    consume(SEMICOLON, "Expect ';' after value.");
-    return new Stmt.Print(value);
   }
 
   private Stmt expressionStatement() {
@@ -56,10 +56,10 @@ public class Parser {
     return new Stmt.Expression(expr);
   }
 
-  // This functions represents this rule:
-  // expression → equality
-  private Expr expression() {
-    return comma();
+  private Stmt printStatement() {
+    Expr value = expression();
+    consume(SEMICOLON, "Expect ';' after value.");
+    return new Stmt.Print(value);
   }
 
   // comma → conditional ( "," conditional )* ;
