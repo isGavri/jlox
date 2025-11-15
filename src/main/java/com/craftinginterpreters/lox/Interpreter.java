@@ -9,11 +9,15 @@ import com.craftinginterpreters.lox.Expr.Grouping;
 import com.craftinginterpreters.lox.Expr.Literal;
 import com.craftinginterpreters.lox.Expr.Ternary;
 import com.craftinginterpreters.lox.Expr.Unary;
+import com.craftinginterpreters.lox.Expr.Variable;
+import com.craftinginterpreters.lox.Stmt.Var;
 
 /**
  * Interpreter
  */
 public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
+
+  private Environment environment = new Environment();
 
   void interpret(List<Stmt> statements) {
     try {
@@ -168,6 +172,11 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   }
 
   @Override
+  public Object visitVariableExpr(Variable expr) {
+    return environment.get(expr.name);
+  }
+
+  @Override
   public Object visitCommaExpr(Comma expr) {
     // TODO Auto-generated method stub
     throw new UnsupportedOperationException("Unimplemented method 'visitCommaExpr'");
@@ -197,6 +206,16 @@ public class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void> {
   public Void visitPrintStmt(Stmt.Print stmt) {
     Object value = evaluate(stmt.expr);
     System.out.println(stringify(value));
+    return null;
+  }
+
+  @Override
+  public Void visitVarStmt(Stmt.Var stmt) {
+    Object value = null;
+    if (stmt.initializer != null) {
+      value = evaluate(stmt.initializer);
+    }
+    environment.define(stmt.name.lexeme, value);
     return null;
   }
 
