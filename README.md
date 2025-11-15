@@ -130,6 +130,3 @@ primary         → "true" | "false" | "nil"
                 | "(" expression ")"
                 | IDENTIFIER ;
 ```
-### Interpreter
-
-We just return the value of our leaf nodes that are literals, and run each type of expression
