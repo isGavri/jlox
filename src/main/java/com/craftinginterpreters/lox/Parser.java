@@ -1,5 +1,5 @@
-ptoolackage com.craftinginterpreters.lox;
-    // "Variable : Token name"
+package com.craftinginterpreters.lox;
+// "Variable : Token name"
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,12 +44,13 @@ public class Parser {
     return comma();
   }
 
-  private Stmt declaration(){
+  private Stmt declaration() {
     try {
-    if(match(VAR)) varDeclaration();
+      if (match(VAR))
+        varDeclaration();
 
-    return statement();
-    } catch (ParseError error){
+      return statement();
+    } catch (ParseError error) {
       synchronize();
       return null;
     }
@@ -74,11 +75,11 @@ public class Parser {
     return new Stmt.Print(value);
   }
 
-  private Stmt varDeclaration(){
-    Token name = consume (IDENTIFIER, "Expect variable name.");
+  private Stmt varDeclaration() {
+    Token name = consume(IDENTIFIER, "Expect variable name.");
 
     Expr initializer = null;
-    if(match(EQUAL)){
+    if (match(EQUAL)) {
       initializer = expression();
     }
 
@@ -204,7 +205,7 @@ public class Parser {
       return new Expr.Literal(previous().literal);
     }
 
-    if (match(IDENTIFIER)){
+    if (match(IDENTIFIER)) {
       return new Expr.Variable(previous());
     }
 
