@@ -47,7 +47,7 @@ public class Parser {
   private Stmt declaration() {
     try {
       if (match(VAR))
-        varDeclaration();
+        return varDeclaration();
 
       return statement();
     } catch (ParseError error) {

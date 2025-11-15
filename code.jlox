@@ -22,3 +22,7 @@ if (x < 10)
 print "one";
 print true;
 print 2 + 1;
+
+var bar = 13;
+var boo = 2;
+print bar + boo;
